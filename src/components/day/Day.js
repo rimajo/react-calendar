@@ -11,7 +11,7 @@ class Day extends Component {
   }
 
   //just for mockind data as there is no database connection yet
-  getInitialActivities = () => {
+  getInitialActivities() {
     let option = Math.floor(Math.random() * 4);
 
     switch(option) {
@@ -26,7 +26,7 @@ class Day extends Component {
     }
   }
 
-  getDayName = () => {
+  getDayName() {
     let weekday = [
       "Söndag",
       "Måndag",
@@ -39,7 +39,7 @@ class Day extends Component {
     return weekday[this.props.dayNameIndex];
   }
 
-  getDayType = () => {
+  getDayType() {
     if (this.props.type === 'filler') {
       return (<div className={`day ${this.props.type}`}>
          <div className='day-header'>

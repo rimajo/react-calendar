@@ -9,7 +9,7 @@ class Month extends Component {
     this.state = this.getInitialDate();
   }
 
-  getInitialDate = () => {
+  getInitialDate (){
     let date                  = new Date();
     let today                 = date.getDate();
     let year                  = date.getFullYear();
@@ -20,7 +20,7 @@ class Month extends Component {
     let lastDay               = new Date(year, month, numberOfDays).getDay();
 
     return ({
-      year: year,
+       year: year,
        numberOfDays: numberOfDays,
        numberOfDaysLastMonth: numberOfDaysLastMonth,
        currentDay: today,
@@ -30,8 +30,8 @@ class Month extends Component {
     });
   }
 
-    getMonthName = () => {
-    let weekday = [
+    getMonthName() {
+    const weekday = [
       'Januari',
       'Februari',
       'Mars',
@@ -48,16 +48,17 @@ class Month extends Component {
     return weekday[this.state.currentMonth];
   }
 
-  getDayNameIndex = (dayNumber) => {
+  getDayNameIndex(dayNumber) {
     if (dayNumber > 6) {
       return dayNumber%7
     }
     return dayNumber;
   }
 
-  getFillerDaysStart = () => {
+  getFillerDaysStart() {
     let fillerDays = [];
     let dayNumber = this.state.numberOfDaysLastMonth - this.state.startDay+1;
+   
     for (var i = 0; i < this.state.startDay; i++) {
       fillerDays.push(<Day type='filler' dayNumber={dayNumber}/>);
       dayNumber++;
@@ -65,7 +66,7 @@ class Month extends Component {
     return fillerDays;
   }
 
-  getFillerDaysEnd = () => {
+  getFillerDaysEnd () {
     let fillerDays = [];
     let dayNumber = 1;
     for (var i = this.state.lastDay; i < 6; i++) {
@@ -75,7 +76,7 @@ class Month extends Component {
     return fillerDays;
   }
 
-  getDays = () => {
+  getDays () {
     let days = [];
 
     for (var i = 0; i < this.state.numberOfDays; i++) {

@@ -3,7 +3,7 @@ import './activity.css';
 
 class Activity extends Component {
 
-  getDescription = () => {
+  getDescription() {
     if (this.props.type === 'T') {
       return <span className='activity-description'> {this.props.owner}</span>
     }
