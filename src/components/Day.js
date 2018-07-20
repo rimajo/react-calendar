@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import Activity from './../activity/Activity';
-import './day.css';
 
+import React, { Component } from 'react';
+import Activity from './Activity';
 
 class Day extends Component {
 

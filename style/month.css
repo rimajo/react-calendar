@@ -9,3 +9,7 @@
     text-align: center;
     text-transform: uppercase;
 }
+
+.clickable{
+	cursor: pointer;
+}

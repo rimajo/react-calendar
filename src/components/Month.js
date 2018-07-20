@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
-import './month.css';
-import Day from './../day/Day';
+import Day from './Day';
 
 class Month extends Component {
 
   constructor(props) {
     super(props);
-    this.state = this.getInitialDate();
+    let initialDate = this.getInitialDate();
+    this.state = {initialDate, startOnMonday: props.startOnMonday || false}
+    console.log(this.state);
   }
 
   getInitialDate (){
     let date                  = new Date();
     let today                 = date.getDate();
     let year                  = date.getFullYear();
-    let month                 = date.getMonth();
+    let month                 = date.getMonth()+1;
     let numberOfDays          = new Date(year, month+1, 0).getDate();
     let numberOfDaysLastMonth = new Date(year, month, 0).getDate();
-    let startDay              = new Date(year, month, 1).getDay();
+    let startDay              = new Date(year, month, 1).getDay() || 7;
     let lastDay               = new Date(year, month, numberOfDays).getDay();
 
     return ({
@@ -30,22 +31,25 @@ class Month extends Component {
     });
   }
 
-    getMonthName() {
-    const weekday = [
-      'Januari',
-      'Februari',
-      'Mars',
-      'April',
-      'Maj',
-      'Juni',
-      'Juli',
-      'Augusti',
-      'September',
-      'Oktober',
-      'November',
-      'December'
+  getDayHeaders() {
+    const headers = [];
+
+    const defaultDayName = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
     ];
-    return weekday[this.state.currentMonth];
+
+    const dayName = this.props.dayTranslations || defaultDayName;
+
+    dayName.forEach(function(name) {
+      headers.push(<span className='day-name'>{name}</span>);
+    });
+    return headers;
   }
 
   getDayNameIndex(dayNumber) {
@@ -57,9 +61,9 @@ class Month extends Component {
 
   getFillerDaysStart() {
     let fillerDays = [];
-    let dayNumber = this.state.numberOfDaysLastMonth - this.state.startDay+1;
-   
-    for (var i = 0; i < this.state.startDay; i++) {
+    let dayNumber = this.state.initialDate.numberOfDaysLastMonth - this.state.initialDate.startDay+1;
+
+    for (var i = 0; i < this.state.initialDate.startDay-1; i++) {
       fillerDays.push(<Day type='filler' dayNumber={dayNumber}/>);
       dayNumber++;
     }
@@ -69,7 +73,7 @@ class Month extends Component {
   getFillerDaysEnd () {
     let fillerDays = [];
     let dayNumber = 1;
-    for (var i = this.state.lastDay; i < 6; i++) {
+    for (var i = this.state.initialDate.lastDay; i < 7; i++) {
       fillerDays.push(<Day type='filler' dayNumber={dayNumber}/>);
         dayNumber++;
     }
@@ -79,9 +83,9 @@ class Month extends Component {
   getDays () {
     let days = [];
 
-    for (var i = 0; i < this.state.numberOfDays; i++) {
-      let day = this.state.currentDay === i+1 ? 'today' : '';
-      days.push(<Day key={i} dayNumber={i+1} dayNameIndex={this.getDayNameIndex(this.state.startDay+i)} day={day}/>);
+    for (var i = 0; i < this.state.initialDate.numberOfDays; i++) {
+      let day = this.state.initialDate.currentDay === i+1 ? 'today' : '';
+      days.push(<Day key={i} dayNumber={i+1} dayNameIndex={this.getDayNameIndex(this.state.initialDate.startDay+i)} day={day}/>);
     }
     return days;
   }
@@ -90,15 +94,8 @@ class Month extends Component {
 
     return (
         <div id='month' className='center'>
-          <div id='month-navigation'>{this.state.year} {this.getMonthName()}</div>
           <div id='month-header'>
-            <span className='day-name'>Söndag</span>
-            <span className='day-name'>Måndag</span>
-            <span className='day-name'>Tisdag</span>
-            <span className='day-name'>Onsdag</span>
-            <span className='day-name'>Torsdag</span>
-            <span className='day-name'>Fredag</span>
-            <span className='day-name'>Lördag</span>
+            {this.getDayHeaders()}
           </div>
           {this.getFillerDaysStart()}
           {this.getDays()}

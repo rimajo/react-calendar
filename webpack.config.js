@@ -1,6 +1,9 @@
 const webpack = require('webpack');
 
 module.exports = {
+  watchOptions: {
+    poll: 1000
+  },
   module: {
     rules: [
       {
@@ -12,10 +15,17 @@ module.exports = {
       },
       {
         test: /\.css$/, 
+        exclude: /node_modules/,
         use:{
           loader: 'css-loader'           
         }             
       }  
     ] 
-  }  
+  },
+  devServer: {
+      hot: true
+  } ,
+    plugins: [    
+     new webpack.HotModuleReplacementPlugin()
+    ]
 };
