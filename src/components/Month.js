@@ -1,40 +1,13 @@
 import React, { Component } from 'react';
 import Day from './Day';
+import { connect } from "react-redux";
+import { navigateForward, navigateBackwards } from "../actions/MonthPickerActions";
 
 class Month extends Component {
 
   constructor(props) {
     super(props);
-    let initialDate = this.getInitialDate();
-    this.state = {initialDate, startOnMonday: props.startOnMonday || false}
-    console.log(this.state);
-  }
-
-  getInitialDate (){
-    let date                  = new Date();
-    let today                 = date.getDate();
-    let year                  = date.getFullYear();
-    let month                 = date.getMonth()+1;
-    let numberOfDays          = new Date(year, month+1, 0).getDate();
-    let numberOfDaysLastMonth = new Date(year, month, 0).getDate();
-    let startDay              = new Date(year, month, 1).getDay() || 7;
-    let lastDay               = new Date(year, month, numberOfDays).getDay();
-
-    return ({
-       year: year,
-       numberOfDays: numberOfDays,
-       numberOfDaysLastMonth: numberOfDaysLastMonth,
-       currentDay: today,
-       currentMonth: month,
-       startDay: startDay,
-       lastDay: lastDay
-    });
-  }
-
-  getDayHeaders() {
-    const headers = [];
-
-    const defaultDayName = [
+    const defaultDayNames = [
       'Monday',
       'Tuesday',
       'Wednesday',
@@ -44,65 +17,137 @@ class Month extends Component {
       'Sunday'
     ];
 
-    const dayName = this.props.dayTranslations || defaultDayName;
+    const monthDetails = this.getMonthDetails(props);
 
-    dayName.forEach(function(name) {
-      headers.push(<span className='day-name'>{name}</span>);
+    this.state = Object.assign({dayNames: props.dayTranslations || defaultDayNames}, monthDetails);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const monthDetails = this.getMonthDetails(nextProps);
+    this.setState(Object.assign({dayNames: nextProps.dayTranslations || defaultDayNames}, monthDetails));
+  }
+
+  getMonthDetails(props) {
+    const date                  = new Date();
+    const numberOfDays          = new Date(props.date.year, props.date.month+1, 0).getDate();
+    const numberOfDaysLastMonth = new Date(props.date.year, props.date.month, 0).getDate();
+    const startDay              = new Date(props.date.year, props.date.month, 1).getDay() || 7;
+    const lastDay               = new Date(props.date.year, props.date.month, numberOfDays).getDay();   
+
+    const monthDetails = {
+       currentDay: 0,
+       numberOfDays: numberOfDays,
+       numberOfDaysLastMonth: numberOfDaysLastMonth,
+       startDay: startDay,
+       lastDay: lastDay
+    }
+
+    if (date.getMonth() === props.date.month) {
+      monthDetails.currentDay = date.getDate();      
+    } 
+
+    return monthDetails;
+  }
+
+  getDayHeaders() {
+    return this.state.dayNames.map((name, index)=>{
+      return <span key={`header-${index}`} className='day-name'>{name}</span>
     });
-    return headers;
   }
 
   getDayNameIndex(dayNumber) {
     if (dayNumber > 6) {
-      return dayNumber%7
+      return dayNumber%7;
     }
     return dayNumber;
   }
 
   getFillerDaysStart() {
     let fillerDays = [];
-    let dayNumber = this.state.initialDate.numberOfDaysLastMonth - this.state.initialDate.startDay+1;
-
-    for (var i = 0; i < this.state.initialDate.startDay-1; i++) {
-      fillerDays.push(<Day type='filler' dayNumber={dayNumber}/>);
-      dayNumber++;
-    }
+    let dayNumber = this.state.numberOfDaysLastMonth - (this.state.startDay-1)+1;
+    
+      for (var i = 0; i < this.state.startDay-1; i++) {
+        fillerDays.push(<Day key={`start-filler-${i}`} type='filler' dayNumber={dayNumber}/>);
+        dayNumber++;
+      }
+    
     return fillerDays;
   }
 
   getFillerDaysEnd () {
     let fillerDays = [];
     let dayNumber = 1;
-    for (var i = this.state.initialDate.lastDay; i < 7; i++) {
-      fillerDays.push(<Day type='filler' dayNumber={dayNumber}/>);
+    if (this.state.lastDay != 0){
+      for (var i = this.state.lastDay; i < 7; i++) {
+        fillerDays.push(<Day key={`end-filler-${i}`} type='filler' dayNumber={dayNumber}/>);
         dayNumber++;
+      }      
     }
     return fillerDays;
   }
 
   getDays () {
-    let days = [];
-
-    for (var i = 0; i < this.state.initialDate.numberOfDays; i++) {
-      let day = this.state.initialDate.currentDay === i+1 ? 'today' : '';
-      days.push(<Day key={i} dayNumber={i+1} dayNameIndex={this.getDayNameIndex(this.state.initialDate.startDay+i)} day={day}/>);
+    const days = [];
+    for (var i = 0; i < this.state.numberOfDays; i++) {
+      let day = this.state.currentDay === i+1 ? 'today' : '';
+      days.push(<Day key={`day-${i}`} dayNumber={i+1} dayNameIndex={this.getDayNameIndex(this.state.startDay+i)} day={day}/>);
     }
     return days;
   }
 
-  render() {
+  getCalendarHeaders() {
+    return this.state.dayNames.map((name, index)=>{
+      return <th key={`header-${index}`}>{name}</th>
+    });
+  }
 
+  getEmptyWeeks(numberOfDays) {
+    const weeks = [];
+
+    const numberOfWeeks = numberOfDays / 7;
+
+    for (var i = 0; i < numberOfWeeks; i++) {
+      weeks.push([]);
+    }
+
+    return weeks;
+  }
+
+  getCalendarBody() {
+    let days    = this.getFillerDaysStart();
+    days        = days.concat(this.getDays());
+    days        = days.concat(this.getFillerDaysEnd());
+    const weeks = this.getEmptyWeeks(days.length);
+  
+    days.forEach((day, index)=>{
+      weeks[Math.floor(index/7)].push(day);
+    });
+
+    return weeks.map((week, index) => {
+      return <tr key={`week-${index}`}>{week}</tr>
+    });
+  }
+  
+  render() {
     return (
-        <div id='month' className='center'>
-          <div id='month-header'>
-            {this.getDayHeaders()}
-          </div>
-          {this.getFillerDaysStart()}
-          {this.getDays()}
-          {this.getFillerDaysEnd()}
-        </div>
+        <table>
+          <thead>
+            <tr>
+            {this.getCalendarHeaders()}
+            </tr>
+          </thead>
+          <tbody>
+            {this.getCalendarBody()}
+          </tbody>
+        </table>
     );
   }
 }
 
-export default Month;
+const mapStateToProps = (state) => {
+  return {
+    date: state.month,
+  };
+};
+
+export default connect(mapStateToProps)(Month);

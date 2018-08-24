@@ -1,0 +1,12 @@
+body{
+	margin: 0px;
+}
+
+#root {
+	height: calc(100vh - 10px);
+	margin: 5px;
+}
+
+.clickable{
+	cursor: pointer;
+}

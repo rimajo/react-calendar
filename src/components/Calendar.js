@@ -13,7 +13,7 @@ class Calendar extends Component {
     let dayTranslations   = (this.props.dayTranslations && this.props.dayTranslations.length == 7) ? this.props.dayTranslations : null;
 
     return (
-        <div>
+        <div id='calendar-wrapper'>
           <MonthPicker monthTranslations={monthTranslations}/>
           <Month dayTranslations={dayTranslations}/>
         </div>

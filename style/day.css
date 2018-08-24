@@ -1,75 +1,58 @@
-.day {
-	display: inline-block;
-    border: solid #ccc 1px;
-    width: calc(14.58% - 8px);    height: 150px;
-    float: left;
+tr td{
+    background: #f2f2f2;
 }
 
 .filler {
-	background: #e9e9e9;
+	background: #b4b4b4;
+    opacity: 0.5;
 }
 
 .day-header {
     width: 100%;
     height: 30px;
-    padding-top: 5px;
-    border-bottom: solid #000 1px
 }
 
 .day-number {
-    position: absolute;
-    float: left;
-    margin-left: 5px;
-}
-
-.day-name {
-    width: 14.07%;
-    float: left;
-    text-align: center;
+    float: right;
+    margin-right: 13px;
+    margin-top: 13px;
 }
 
 .today {
-    background: #f0ae37;
-    border-radius: 17px;
-    padding: 3px;
-}
-
-.day-name-small {
-    display: none;
+    background: #ffc107;
+    padding: 12px;
+    margin-right: 0;
+    margin-top: 0;
+    font-weight: bold;
 }
 
 .day-body {
-	display: table;
-    table-layout: fixed;
-    height: 114px;
-    width: calc(100% + 1px);
+    height: calc(100% - 30px);
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.day-body div{    
+    top: calc(50% - 30px);
+    position: relative;
 }
 
 @media only screen and (max-width: 930px) {
 	.day {
 		display: inline-block;
 		border:none;
-    border-bottom: solid #000 1px;
+        border-bottom: solid #000 1px;
 		width: 100%;
 		height: 150px;
-    float: left;
+        float: left;
 	}
 
 	.filler {
 		display: none;
 	}
 
-    .day-name-small{
-        display: block;
-        width: 100%;
-        text-align: center;
-    }
-
-    .day-name{
-        display: none;
-    }
-
     .day-body{
         width: 100%;
     }
-}
+} 

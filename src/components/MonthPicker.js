@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { navigateForward, navigateBackwards } from "../actions/MonthPickerActions";
 
 class MonthPicker extends Component {
 
-  getMonthName() {
+  constructor(props) {
+    super(props);
+
     const defaultMonthNames = [
       'January',
       'February',
@@ -21,26 +23,19 @@ class MonthPicker extends Component {
       'December'
     ];
 
-    const monthName = this.props.monthTranslations || defaultMonthNames;
-
-    return monthName[this.props.date.month];  
+    this.state = {monthNames: props.monthTranslations || defaultMonthNames}
   }
 
-  handleNavigateForward(){
-    this.props.navigateForward();
-  }
-
-  handleNavigateBackwards(){
-    this.props.navigateBackwards();
+  getMonthName() {
+    return this.state.monthNames[this.props.date.month];
   }
 
   render() {
-
     return (
-        <div className='center'>
-          <FontAwesomeIcon icon='angle-left'  onClick={() => this.handleNavigateForward()}   className='clickable'/>
-          <FontAwesomeIcon icon='angle-right' onClick={() => this.handleNavigateBackwards()} className='clickable'/>
-          <span>{this.props.date.year} {this.getMonthName()}</span>
+        <div id='month-navigation'>
+          <span id='current-date'>{this.props.date.year} {this.getMonthName()}</span>
+          <FontAwesomeIcon icon='angle-left'  onClick={() => this.props.navigateForward()}   className='clickable'/>
+          <FontAwesomeIcon icon='angle-right' onClick={() => this.props.navigateBackwards()} className='clickable'/>
         </div>
     );
   }
