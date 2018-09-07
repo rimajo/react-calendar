@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Day from './Day';
 import { connect } from "react-redux";
-import { navigateForward, navigateBackwards } from "../actions/MonthPickerActions";
 
 class Month extends Component {
 

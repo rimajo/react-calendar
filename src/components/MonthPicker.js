@@ -34,8 +34,8 @@ class MonthPicker extends Component {
     return (
         <div id='month-navigation'>
           <span id='current-date'>{this.props.date.year} {this.getMonthName()}</span>
-          <FontAwesomeIcon icon='angle-left'  onClick={() => this.props.navigateForward()}   className='clickable'/>
-          <FontAwesomeIcon icon='angle-right' onClick={() => this.props.navigateBackwards()} className='clickable'/>
+          <FontAwesomeIcon icon='angle-left' className='clickable' onClick={() => this.props.navigateForward()}/>
+          <FontAwesomeIcon icon='angle-right' className='clickable' onClick={() => this.props.navigateBackwards()}/>
         </div>
     );
   }

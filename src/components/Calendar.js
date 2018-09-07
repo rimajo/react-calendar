@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Month from './Month';
 import MonthPicker from './MonthPicker';
+import ActivityManager from './ActivityManager';
 
 class Calendar extends Component {
 
@@ -14,6 +15,7 @@ class Calendar extends Component {
 
     return (
         <div id='calendar-wrapper'>
+          <ActivityManager />
           <MonthPicker monthTranslations={monthTranslations}/>
           <Month dayTranslations={dayTranslations}/>
         </div>

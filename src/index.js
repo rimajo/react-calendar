@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 import store from './store';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft, faAngleRight, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faAngleLeft, faAngleRight);
+library.add(faAngleLeft, faAngleRight, faCheck, faTimes);
 
 store.subscribe(() => {
   console.log("Store updated!", store.getState());

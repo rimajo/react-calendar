@@ -27,7 +27,7 @@ const MonthReducer = (state = getInitialDate(), action) => {
           month: state.month+1
         };
       }
-      break;
+      break;   
   }
 
   return state;
