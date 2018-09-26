@@ -1,0 +1,9 @@
+const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
+
+const DATABASE = {
+  CREATE_ACTIVITY
+};
+
+Object.freeze(DATABASE);
+
+export { DATABASE };
