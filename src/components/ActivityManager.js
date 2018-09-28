@@ -8,6 +8,8 @@ class ActivityManager extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {owner: '', note: '', date: ''}
   }
 
   getUserSelect() {
@@ -33,7 +35,7 @@ class ActivityManager extends Component {
 
   render() {
   	if (this.props.activity.managerIsOpen) {
-      return (
+      	return (
       		<div id='activity-manager' className='shadow'>
       		<span className='header'>{this.getDisplayDate()}<FontAwesomeIcon icon='times' className='clickable' onClick={() => this.props.closeManager()}/></span>
       		<div className='body'>

@@ -10,6 +10,15 @@ class Day extends Component {
     super(props);
   }
 
+  getActivity(){
+    if(Object.getOwnPropertyNames(this.props.activityInformation).length > 0) {
+      const userIndex = this.props.activityInformation.owner;
+      const user = this.props.users.find(user => user.id == userIndex);
+      return <Activity owner={user.name} color={user.color}/>;
+    }
+    return null;
+  }
+
   render() {
     let clickProperty = () => this.props.openManager(this.props.dayNumber);
     let backgroundProperty = {background: `${this.props.activityInformation.color}`};
@@ -24,15 +33,17 @@ class Day extends Component {
           <span className={`day-number ${this.props.day}`}>{this.props.dayNumber}</span>
           </div>
         <div className='day-body'>
-          <Activity owner={this.props.activityInformation.owner} color={this.props.activityInformation.color}/>
+          {this.getActivity()}
         </div>
-      </td>);
+      </td>
+    );
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    activity: state.activity
+    activity: state.activity,
+    users: state.fakeDatabase.users
   };
 };
 
