@@ -2,40 +2,45 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { navigateForward, navigateBackwards } from "../actions/MonthPickerActions";
+import { filterActiveties } from "../actions/FakeDatabaseActions";
 
 class MonthPicker extends Component {
 
   constructor(props) {
     super(props);
 
-    const defaultMonthNames = [
+    this.monthNames = [
       'January',
       'February',
-      'March',
+      'Mars',
       'April',
-      'May',
-      'June',
-      'July',
-      'August',
+      'Maj',
+      'Juni',
+      'Juli',
+      'Augusti',
       'September',
-      'October',
+      'Oktober',
       'November',
       'December'
     ];
 
-    this.state = {monthNames: props.monthTranslations || defaultMonthNames}
+    props.filterActiveties(props.date.year, props.date.month);
   }
 
   getMonthName() {
-    return this.state.monthNames[this.props.date.month];
+    return this.monthNames[this.props.date.month];
+  }
+
+  componentWillReceiveProps(nextProps){    
+    this.props.filterActiveties(nextProps.date.year, nextProps.date.month);
   }
 
   render() {
     return (
         <div id='month-navigation'>
           <span id='current-date'>{this.props.date.year} {this.getMonthName()}</span>
-          <FontAwesomeIcon icon='angle-left' className='clickable' onClick={() => this.props.navigateForward()}/>
-          <FontAwesomeIcon icon='angle-right' className='clickable' onClick={() => this.props.navigateBackwards()}/>
+          <FontAwesomeIcon icon='angle-left'  className='clickable' onClick={() => this.props.navigateBackwards()}/>
+          <FontAwesomeIcon icon='angle-right' className='clickable' onClick={() => this.props.navigateForward()}/>
         </div>
     );
   }
@@ -44,11 +49,15 @@ class MonthPicker extends Component {
 const mapStateToProps = (state) => {
   return {
     date: state.month,
+    activities: state.fakeDatabase.activities
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    filterActiveties: (year, month) => {
+      dispatch(filterActiveties(year, month));
+    },
     navigateForward: () => {
       dispatch(navigateForward());
     },

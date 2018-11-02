@@ -9,15 +9,12 @@ class Calendar extends Component {
     super(props);
   }
 
-  render() {
-    let monthTranslations = (this.props.monthTranslations && this.props.monthTranslations.length == 12) ? this.props.monthTranslations : null;
-    let dayTranslations   = (this.props.dayTranslations && this.props.dayTranslations.length == 7) ? this.props.dayTranslations : null;
-
+  render() {  
     return (
         <div id='calendar-wrapper'>
           <ActivityManager />
-          <MonthPicker monthTranslations={monthTranslations}/>
-          <Month dayTranslations={dayTranslations}/>
+          <MonthPicker />
+          <Month />
         </div>
 
     );

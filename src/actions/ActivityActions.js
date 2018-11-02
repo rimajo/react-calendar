@@ -11,9 +11,3 @@ export function closeManager() {
     type: ACTIVITY.CLOSE_MANAGER
   };
 }
-
-export function saveActivity() {
-  return {
-    type: ACTIVITY.CLOSE_MANAGER
-  };
-}

@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import Activity from './Activity';
@@ -14,18 +13,14 @@ class Day extends Component {
     if(Object.getOwnPropertyNames(this.props.activityInformation).length > 0) {
       const userIndex = this.props.activityInformation.owner;
       const user = this.props.users.find(user => user.id == userIndex);
-      return <Activity owner={user.name} color={user.color}/>;
+      return <Activity owner={user.name} note={this.props.activityInformation.note}/>;
     }
     return null;
   }
 
   render() {
-    let clickProperty = () => this.props.openManager(this.props.dayNumber);
-    let backgroundProperty = {background: `${this.props.activityInformation.color}`};
-    if (this.props.type === 'filler') {
-      clickProperty = null;
-      backgroundProperty = {background: '#cecece'};
-    }
+    const clickProperty = () => this.props.openManager(this.props.dayNumber);
+    const backgroundProperty = {background: `${this.props.activityInformation.color || '#f2f2f2'}`};
 
     return (
       <td style={backgroundProperty} onClick={clickProperty}>

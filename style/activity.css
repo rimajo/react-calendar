@@ -41,16 +41,25 @@
     background: #d2d2d2;
 }
 
-#activity-manager select{
-	width: 175px;
+#activity-manager select, #activity-manager input{
+	width: 100%;
     height: 25px;
     font-size: 15px;
-    margin-top: 30px;
-    margin-left: 61px;
+}
+
+#activity-manager label{
+    margin-top: 5px;
+    display: block;
+}
+
+#activity-content{
+    position: relative;
+    width: 80%;
+    left: 10%;
 }
 
 .shadow{
-	box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5)  ; 
-	-webkit-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5)  ; 
-	-moz-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5)  ; 
+	box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
+	-webkit-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
+	-moz-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
 }

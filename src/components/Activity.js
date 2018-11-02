@@ -6,6 +6,7 @@ class Activity extends Component {
     return (
       <div className='activity'>
         <span>{this.props.owner}</span>
+        <span>{this.props.note}</span>
       </div>
     );
   }

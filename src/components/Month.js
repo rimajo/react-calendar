@@ -1,29 +1,20 @@
 import React, { Component } from 'react';
 import Day from './Day';
+import FillerDay from './FillerDay';
+import CalendarHeader from './CalendarHeader';
+
 import { connect } from "react-redux";
 
 class Month extends Component {
 
   constructor(props) {
-    super(props);
-    const defaultDayNames = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
-    ];
-
-    const monthDetails = this.getMonthDetails(props);
-
-    this.state = Object.assign({dayNames: props.dayTranslations || defaultDayNames}, monthDetails);
+    super(props);   
+    
+    this.state = this.getMonthDetails(props);
   }
 
-  componentWillReceiveProps(nextProps) {
-    const monthDetails = this.getMonthDetails(nextProps);
-    this.setState(Object.assign({dayNames: nextProps.dayTranslations || defaultDayNames}, monthDetails));
+  componentWillReceiveProps(nextProps){
+    this.setState(this.getMonthDetails(nextProps));
   }
 
   getMonthDetails(props) {
@@ -48,34 +39,11 @@ class Month extends Component {
     return monthDetails;
   }
 
-  getDayHeaders() {
-    return this.state.dayNames.map((name, index)=>{
-      return <span key={`header-${index}`} className='day-name'>{name}</span>
-    });
-  }
-
-  getDayNameIndex(dayNumber) {
-    if (dayNumber > 6) {
-      return dayNumber%7;
-    }
-    return dayNumber;
-  }
-
-  getDaysWithActivities() {
-     return this.props.activeties.map(activity => {
-       let day = activity.date.split("-")[2];
-       if (day.startsWith('0')) {
-         return  parseInt(day.substring(1,2));
-       }
-      return parseInt(day);
-    });
-  }
-
   getFillerDaysStart() {
     let fillerDays = [];
     let dayNumber = this.state.numberOfDaysLastMonth - (this.state.startDay-1)+1;
       for (var i = 0; i < this.state.startDay-1; i++) {
-        fillerDays.push(<Day key={`start-filler-${i}`} type='filler' dayNumber={dayNumber} />);
+        fillerDays.push(<FillerDay key={`start-filler-${i}`} dayNumber={dayNumber} />);
         dayNumber++;
       }
 
@@ -87,7 +55,7 @@ class Month extends Component {
     let dayNumber = 1;
     if (this.state.lastDay != 0){
       for (var i = this.state.lastDay; i < 7; i++) {
-        fillerDays.push(<Day key={`end-filler-${i}`} type='filler' dayNumber={dayNumber} />);
+        fillerDays.push(<FillerDay key={`end-filler-${i}`} dayNumber={dayNumber} />);
         dayNumber++;
       }
     }
@@ -96,69 +64,76 @@ class Month extends Component {
 
   getDays () {
     const days = [];
-    const activityDays = this.getDaysWithActivities();
     for (var i = 0; i < this.state.numberOfDays; i++) {
-      const day = this.state.currentDay === i+1 ? 'today' : '';
-      let activityInformation = {};
-
-      if (activityDays.includes(i+1)) {
-          activityInformation = this.props.activeties[activityDays.indexOf(i+1)];
-      }
-          days.push(<Day key={`day-${i}`} dayNumber={i+1} dayNameIndex={this.getDayNameIndex(this.state.startDay+i)} day={day} activityInformation={activityInformation}/>);
-        }
+      const day = this.state.currentDay === i+1 ? 'today' : '';   
+      days.push(
+        <Day key={`day-${i}`} 
+             dayNumber={i+1} 
+             day={day} 
+             activityInformation={this.getActivityInformation(i+1)}/>
+      );
+    }
         return days;
+  }
+
+  getActivityInformation(dayNumber){
+    const activityInformation = this.props.currentMonthsActiveties.find(activity => {
+      let day = activity.date.split("-")[2];
+      day = day.startsWith('0') ? day.substring(1,2) : day;
+      return day == dayNumber;
+    });
+
+    if (activityInformation) {
+      const user = this.props.users.find(user => user.id == activityInformation.owner);     
+      activityInformation.color = user.color;
+      return activityInformation;      
     }
+    
+    return {};
+  }
 
-    getCalendarHeaders() {
-      return this.state.dayNames.map((name, index)=>{
-        return <th key={`header-${index}`}>{name}</th>
-      });
+  getEmptyWeeks(numberOfDays) {
+    const weeks = [];
+    const numberOfWeeks = numberOfDays / 7;
+    for (var i = 0; i < numberOfWeeks; i++) {
+      weeks.push([]);
     }
+    return weeks;
+  }
 
-    getEmptyWeeks(numberOfDays) {
-      const weeks = [];
-      const numberOfWeeks = numberOfDays / 7;
-      for (var i = 0; i < numberOfWeeks; i++) {
-        weeks.push([]);
-      }
-      return weeks;
-    }
+  getCalendarBody() {     
+    let days    = this.getFillerDaysStart();
+    days        = days.concat(this.getDays());
+    days        = days.concat(this.getFillerDaysEnd());
+    const weeks = this.getEmptyWeeks(days.length);
 
-    getCalendarBody() {
-      let days    = this.getFillerDaysStart();
-      days        = days.concat(this.getDays());
-      days        = days.concat(this.getFillerDaysEnd());
-      const weeks = this.getEmptyWeeks(days.length);
+    days.forEach((day, index)=>{
+      weeks[Math.floor(index/7)].push(day);
+    });
 
-      days.forEach((day, index)=>{
-        weeks[Math.floor(index/7)].push(day);
-      });
+    return weeks.map((week, index) => {
+      return <tr key={`week-${index}`}>{week}</tr>
+    });
+  }
 
-      return weeks.map((week, index) => {
-        return <tr key={`week-${index}`}>{week}</tr>
-      });
-    }
-
-    render() {
-        return (
-            <table>
-              <thead>
-                <tr>
-                {this.getCalendarHeaders()}
-                </tr>
-              </thead>
-              <tbody>
-                {this.getCalendarBody()}
-              </tbody>
-            </table>
-        );
-    }
+  render() {
+    return (
+      <table>
+        <CalendarHeader />
+        <tbody>
+          {this.getCalendarBody()}
+        </tbody>
+      </table>
+    );
+  }
 }
 
 const mapStateToProps = (state) => {
   return {
     date: state.month,
-    activeties: state.fakeDatabase.activities
+    activeties: state.fakeDatabase.activities,
+    users: state.fakeDatabase.users,
+    currentMonthsActiveties: state.fakeDatabase.currentMonthsActiveties
   };
 };
 
